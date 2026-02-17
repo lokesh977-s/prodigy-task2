@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chronos — Premium Stopwatch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne+Mono&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated background orbs -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Noise texture overlay -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <main class="app-container">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-icon">◎</span>
+        <span class="logo-text">CHRONOS</span>
+      </div>
+
+      <div class="header-controls">
+        <!-- Sound toggle -->
+        <button class="icon-btn" id="soundToggle" aria-label="Toggle sound" title="Toggle sound">
+          <svg id="soundIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        </button>
+
+        <!-- Theme toggle -->
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle dark/light mode" title="Toggle theme">
+          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main card -->
+    <section class="watch-card" id="watchCard" aria-label="Stopwatch">
+
+      <!-- Status badge -->
+      <div class="status-badge" id="statusBadge">
+        <span class="status-dot" id="statusDot"></span>
+        <span class="status-text" id="statusText">READY</span>
+      </div>
+
+      <!-- Glow ring -->
+      <div class="glow-ring" id="glowRing" aria-hidden="true"></div>
+
+      <!-- Time display -->
+      <div class="time-display" id="timeDisplay" aria-live="polite" aria-label="Elapsed time">
+        <div class="time-segment">
+          <span class="time-value" id="hours">00</span>
+          <span class="time-label">HH</span>
+        </div>
+        <span class="time-sep">:</span>
+        <div class="time-segment">
+          <span class="time-value" id="minutes">00</span>
+          <span class="time-label">MM</span>
+        </div>
+        <span class="time-sep">:</span>
+        <div class="time-segment">
+          <span class="time-value" id="seconds">00</span>
+          <span class="time-label">SS</span>
+        </div>
+        <span class="time-sep time-sep--ms">.</span>
+        <div class="time-segment time-segment--ms">
+          <span class="time-value time-value--ms" id="milliseconds">00</span>
+          <span class="time-label">MS</span>
+        </div>
+      </div>
+
+      <!-- Current lap indicator -->
+      <div class="current-lap-row" id="currentLapRow">
+        <span class="current-lap-label">Current lap</span>
+        <span class="current-lap-time" id="currentLapTime">00:00:00.00</span>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls" role="group" aria-label="Stopwatch controls">
+        <button class="btn btn--lap" id="lapBtn" disabled aria-label="Record lap">
+          <span class="btn-icon">⧖</span>
+          <span class="btn-label">Lap</span>
+        </button>
+
+        <button class="btn btn--primary" id="startPauseBtn" aria-label="Start stopwatch">
+          <span class="btn-icon btn-icon--play" id="startPauseIcon">▶</span>
+          <span class="btn-label" id="startPauseLabel">Start</span>
+        </button>
+
+        <button class="btn btn--reset" id="resetBtn" aria-label="Reset stopwatch">
+          <span class="btn-icon">↺</span>
+          <span class="btn-label">Reset</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- Lap list -->
+    <section class="laps-section" id="lapsSection" aria-label="Lap times" hidden>
+      <div class="laps-header">
+        <h2 class="laps-title">Lap Times</h2>
+        <div class="laps-legend">
+          <span class="legend-badge legend-badge--fast">● Fastest</span>
+          <span class="legend-badge legend-badge--slow">● Slowest</span>
+        </div>
+      </div>
+      <div class="laps-scroll" id="lapsScroll">
+        <ul class="laps-list" id="lapsList" role="list">
+          <!-- Laps are injected here by JS -->
+        </ul>
+      </div>
+      <button class="btn btn--clear" id="clearLapsBtn" aria-label="Clear all laps">
+        <span>Clear laps</span>
+      </button>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
